@@ -41,7 +41,7 @@ var applyList = {
         'page|+1': 1,
         'pageSize': 10,
         'total': 100,
-        'list|1-10': [{
+        'list|1-30': [{
             'applyTime': '@datetime("T")',
             'applyUserName|3': '姓',
             'department': '天大',
@@ -51,7 +51,9 @@ var applyList = {
             'status|1-4': 1,
             'reason|4': '原因',
             'reviewer': '李明翰',
-            'id|+10': 12
+            'id|+10': 12,
+            'reviewReason': '驳回原因',
+            'reviewTime': 1480746460
         }]
     }
 };
