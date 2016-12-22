@@ -53,7 +53,7 @@ export default (url = '', options) => {
                     else {
                         // 返回错误处理
                         if (json.errno == 4) {
-                            Toast.warning("当前状态未登录，正在带您去登录");
+                            Toast.fail("当前状态未登录，正在带您去登录");
                             setTimeout(() => {
                                 location.href = "/log/log.html"
                             }, 2000);

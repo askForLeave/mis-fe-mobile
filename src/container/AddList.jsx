@@ -32,7 +32,7 @@ export default class AddList extends Component{
 
     componentWillMount() {
         const {info} = this.props;
-        this.getData('draft', 1, 20);
+        this.getData('Draft', 1, 20);
     }
 
     handleTabChange(key) {
