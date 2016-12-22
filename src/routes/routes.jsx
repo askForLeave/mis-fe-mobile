@@ -24,5 +24,7 @@ export default (
             <Route path="edit/:index" component={AddEdit}/>
         </Route>
         <Route path="help" component={Help}/>
+        <Route path="edit" component={Edit} />
+        <Route path="addEdit" component={AddEdit}/>
     </Route>
 );

@@ -106,7 +106,15 @@ export default class App extends Component {
         });
     }
     handleAdd() {
-        let path = location.pathname.substring(1);
+        const {router} = this.props;
+        let path = location.hash.substring(2);
+        if (path === 'apply') {
+            router.push('/edit');
+        } else if (path === 'add') {
+            router.push('/addEdit');
+        } else {
+            Toast.fail('添加请进入加班或请假列表');
+        }
     }
 
     render() {
@@ -156,15 +164,26 @@ export default class App extends Component {
             onOpenChange: () => this.handleOpen()
         };
         let title = this.state.title[location.pathname.substring(1)];
+        let child = '';
+        if (location.pathname.substring(1) === 'addEdit' || location.pathname.substring(1) === 'edit') {
+            child = React.cloneElement(children, {
+                edit: {
+                    info: this.state.info,
+                    type: 'add'
+                }
+            });
+        } else {
+            child = React.cloneElement(children, {
+                info: this.state.info
+            });
+        }
         return (
             <div className="leave-container" style={{ height: '100%', backgroundColor: '#ffffff' }}>
                 <NavBar {...navProps}>{ title || '请假系统'}</NavBar>
                 <Drawer {...drawProps} sidebarStyle={{width: '50%'}} className="leave-drawer">
                     <WhiteSpace/>
                     <WingBlank>
-                        {children && React.cloneElement(children, {
-                            info: this.state.info
-                        })}
+                        {child}
                     </WingBlank>
                     <WhiteSpace/>
                 </Drawer>
