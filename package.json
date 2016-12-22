@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "entry": {
-    "index": "./index.js",
-    "log": "./log.js"
+    "index": "./index.js"
   },
   "scripts": {
     "build": "atool-build",
@@ -29,7 +28,7 @@
     "mockjs": "^1.0.1-beta3",
     "postcss-pxtorem": "^3.3.1",
     "pre-commit": "1.x",
-    "qs": "^6.3.0"
+    "underscore": "^1.8.3"
   },
   "dependencies": {
     "antd-mobile": "0.9.x",

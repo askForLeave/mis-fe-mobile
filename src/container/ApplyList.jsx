@@ -17,7 +17,6 @@ export default class ApplyList extends Component{
 
     getData(key, page, pageSize) {
         const {info} = this.props;
-        const that = this;
         fetch(`/leave/apply/${key}List`, {
             data: {
                 page,
@@ -46,8 +45,9 @@ export default class ApplyList extends Component{
     handlePageChange(e) {
         this.getData(this.state.key, e + 1, 20);
     }
-    handleEdit(id) {
-        console.log(id);
+    handleEdit(index) {
+        const {router} = this.props;
+        router.push('/apply/edit/' + index);
     }
     handleDelete(id) {
         console.log(id);
@@ -63,16 +63,17 @@ export default class ApplyList extends Component{
     }
 
     render() {
-        const {info} = this.props;
-        const accordList = this.state.list.map((value, index) => {
+        console.log(this.props);
+        const {info, children} = this.props;
+        const draftList = this.state.list.map((value, index) => {
             return (
-                <Accordion.Panel header={'申请时间' + moment(parseInt(value.applyTime)).format('YYYY-MM-DD')} key={index}>
+                <Accordion.Panel header={'申请时间' + moment.unix(parseInt(value.applyTime)).format('YYYY-MM-DD')} key={index}>
                     <List>
-                        <Item>申请时间：{moment(parseInt(value.applyTime)).format('YYYY-MM-DD')}</Item>
+                        <Item>申请时间：{moment.unix(parseInt(value.applyTime)).format('YYYY-MM-DD HH:mm:ss')}</Item>
                         <Item>申请人员：{value.applyUserName}</Item>
                         <Item>所属部门：{value.department}</Item>
-                        <Item>开始时间：{moment(parseInt(value.startTime)).format('YYYY-MM-DD HH:mm:ss')}</Item>
-                        <Item>结束时间：{moment(parseInt(value.endTime)).format('YYYY-MM-DD HH:mm:ss')}</Item>
+                        <Item>开始时间：{moment.unix(parseInt(value.startTime)).format('YYYY-MM-DD')}</Item>
+                        <Item>结束时间：{moment.unix(parseInt(value.endTime)).format('YYYY-MM-DD')}</Item>
                         <Item>请假类型：{info.type[value.type].name}</Item>
                         <Item>当前状态：{info.status[value.status]}</Item>
                         <Item>请假原因：{value.reason}</Item>
@@ -80,7 +81,7 @@ export default class ApplyList extends Component{
                         <Item>
                             <Flex justify="around">
                                 <Flex.Item>
-                                    <Button onClick={() => this.handleEdit(value.id)} type="primary" >编辑</Button>
+                                    <Button onClick={() => this.handleEdit(index)} type="primary" >编辑</Button>
                                 </Flex.Item>
                                 <Flex.Item>
                                     <Button onClick={() => this.handleDelete(value.id)} type="warning">删除</Button>
@@ -93,19 +94,19 @@ export default class ApplyList extends Component{
         });
         const publishList = this.state.list.map((value, index) => {
             return (
-                <Accordion.Panel header={'申请时间' + moment(parseInt(value.applyTime)).format('YYYY-MM-DD')} key={index}>
+                <Accordion.Panel header={'申请时间' + moment.unix(parseInt(value.applyTime)).format('YYYY-MM-DD')} key={index}>
                     <List>
-                        <Item>申请时间：{moment(parseInt(value.applyTime)).format('YYYY-MM-DD')}</Item>
+                        <Item>申请时间：{moment.unix(parseInt(value.applyTime)).format('YYYY-MM-DD  HH:mm:ss')}</Item>
                         <Item>申请人员：{value.applyUserName}</Item>
                         <Item>所属部门：{value.department}</Item>
-                        <Item>开始时间：{moment(parseInt(value.startTime)).format('YYYY-MM-DD HH:mm:ss')}</Item>
-                        <Item>结束时间：{moment(parseInt(value.endTime)).format('YYYY-MM-DD HH:mm:ss')}</Item>
+                        <Item>开始时间：{moment.unix(parseInt(value.startTime)).format('YYYY-MM-DD')}</Item>
+                        <Item>结束时间：{moment.unix(parseInt(value.endTime)).format('YYYY-MM-DD')}</Item>
                         <Item>请假类型：{info.type[value.type].name}</Item>
                         <Item>当前状态：{info.status[value.status]}</Item>
                         <Item>请假原因：{value.reason}</Item>
                         <Item>审核人员：{value.reviewer}</Item>
                         <Item>审核原因：{value.reviewReason}</Item>
-                        <Item>审核时间：{moment(parseInt(value.reviewTime)).format('YYYY-MM-DD HH:mm:ss')}</Item>
+                        <Item>审核时间：{moment.unix(parseInt(value.reviewTime)).format('YYYY-MM-DD HH:mm:ss')}</Item>
                     </List>
                 </Accordion.Panel>
             );
@@ -117,25 +118,33 @@ export default class ApplyList extends Component{
             nextText: (<Icon type="right" />),
             onChange: (e) => this.handlePageChange(e)
         };
+        const tabs = (
+            <Tabs defaultActiveKey="draft" onChange={key => this.handleTabChange(key)}>
+                <Tabs.TabPane tab="草稿箱" key="draft">
+                    <Accordion>
+                        {draftList}
+                    </Accordion>
+                    <WhiteSpace/>
+                    <Pagination {...pageProps}/>
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="已提交" key="publish">
+                    <Accordion>
+                        {publishList}
+                    </Accordion>
+                    <WhiteSpace/>
+                    <Pagination {...pageProps}/>
+                </Tabs.TabPane>
+            </Tabs>
+        );
         return (
             <div className="leave-apply">
-                <Tabs defaultActiveKey="draft" onChange={key => this.handleTabChange(key)}>
-                    <Tabs.TabPane tab="草稿箱" key="draft">
-                        <Accordion>
-                            {accordList}
-                        </Accordion>
-                        <WhiteSpace/>
-                        <Pagination {...pageProps}/>
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="已提交" key="publish">
-                        <Accordion>
-                            {publishList}
-                        </Accordion>
-                        <WhiteSpace/>
-                        <Pagination {...pageProps}/>
-                    </Tabs.TabPane>
-                </Tabs>
-
+                {(children && React.cloneElement(children, {
+                    edit: {
+                        list: this.state.list,
+                        type: 'modify',
+                        info
+                    }
+                })) || tabs}
             </div>
         );
     }

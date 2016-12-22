@@ -2,7 +2,6 @@
  * Created by yangmutong on 2016/12/15.
  */
 var Mock = require('mockjs');
-var Qs = require('qs');
 
 var reviewList = {
     'errno': 0,
@@ -76,6 +75,12 @@ module.exports = {
         res.json(Mock.mock(applyList));
     },
     'POST /leave/apply/publishList': function (req, res) {
+        res.json(Mock.mock(applyList));
+    },
+    'POST /leave/apply/overtimeDraftList': function (req, res) {
+        res.json(Mock.mock(applyList));
+    },
+    'POST /leave/apply/overtimePublishList': function (req, res) {
         res.json(Mock.mock(applyList));
     },
     'POST /leave/review/todoList': function (req, res) {

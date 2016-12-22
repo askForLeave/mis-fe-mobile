@@ -3,8 +3,7 @@ import {List, Accordion, Tabs, Button, Flex, Pagination, WhiteSpace, Icon} from 
 import moment from 'moment';
 import fetch from '../common/fetch';
 const Item = List.Item;
-
-export default class ReviewList extends Component{
+export default class AddList extends Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -12,14 +11,13 @@ export default class ReviewList extends Component{
             pageSize: 20,
             total: 0,
             list: [],
-            key: 'todo'
+            key: 'Draft'
         }
     }
 
     getData(key, page, pageSize) {
         const {info} = this.props;
-        const that = this;
-        fetch(`/leave/review/${key}List`, {
+        fetch(`/leave/apply/overtime${key}List`, {
             data: {
                 page,
                 pageSize,
@@ -34,7 +32,7 @@ export default class ReviewList extends Component{
 
     componentWillMount() {
         const {info} = this.props;
-        this.getData('todo', 1, 20);
+        this.getData('draft', 1, 20);
     }
 
     handleTabChange(key) {
@@ -47,27 +45,15 @@ export default class ReviewList extends Component{
     handlePageChange(e) {
         this.getData(this.state.key, e + 1, 20);
     }
-    handlePass(id) {
-        console.log(id);
-        fetch('/leave/review/action', {
-            data: {
-                id: id,
-                status: 3,
-                reviewReason: '快速通过'
-            }
-        }).then(res => {
-            if (!res) {
-                this.getData(this.state.key, 1, 20);
-            }
-        });
+    handleEdit(index) {
+        const {router} = this.props;
+        router.push('/add/edit/' + index);
     }
-    handleRefuse(id) {
+    handleDelete(id) {
         console.log(id);
-        fetch('/leave/review/action', {
+        fetch('/leave/apply/delete', {
             data: {
-                id: id,
-                status: 4,
-                reviewReason: '快速驳回'
+                id: id
             }
         }).then(res => {
             if (!res) {
@@ -77,27 +63,26 @@ export default class ReviewList extends Component{
     }
 
     render() {
-        const {info} = this.props;
-        const accordList = this.state.list.map((value, index) => {
+        console.log(this.props);
+        const {info, children} = this.props;
+        const draftList = this.state.list.map((value, index) => {
             return (
                 <Accordion.Panel header={'申请时间' + moment.unix(parseInt(value.applyTime)).format('YYYY-MM-DD')} key={index}>
                     <List>
-                        <Item>申请时间：{moment.unix(parseInt(value.applyTime)).format('YYYY-MM-DD  HH:mm:ss')}</Item>
+                        <Item>申请时间：{moment.unix(parseInt(value.applyTime)).format('YYYY-MM-DD HH:mm:ss')}</Item>
                         <Item>申请人员：{value.applyUserName}</Item>
                         <Item>所属部门：{value.department}</Item>
-                        <Item>开始时间：{moment.unix(parseInt(value.startTime)).format('YYYY-MM-DD')}</Item>
-                        <Item>结束时间：{moment.unix(parseInt(value.endTime)).format('YYYY-MM-DD')}</Item>
-                        <Item>请假类型：{info.type[value.type].name}</Item>
+                        <Item>加班时间：{moment.unix(parseInt(value.startTime)).format('YYYY-MM-DD')}</Item>
                         <Item>当前状态：{info.status[value.status]}</Item>
-                        <Item>请假原因：{value.reason}</Item>
+                        <Item>加班原因：{value.reason}</Item>
                         <Item>审核人员：{value.reviewer}</Item>
                         <Item>
                             <Flex justify="around">
                                 <Flex.Item>
-                                    <Button onClick={() => this.handlePass(value.id)} type="primary" >快速通过</Button>
+                                    <Button onClick={() => this.handleEdit(index)} type="primary" >编辑</Button>
                                 </Flex.Item>
                                 <Flex.Item>
-                                    <Button onClick={() => this.handleRefuse(value.id)} type="warning">快速驳回</Button>
+                                    <Button onClick={() => this.handleDelete(value.id)} type="warning">删除</Button>
                                 </Flex.Item>
                             </Flex>
                         </Item>
@@ -112,11 +97,9 @@ export default class ReviewList extends Component{
                         <Item>申请时间：{moment.unix(parseInt(value.applyTime)).format('YYYY-MM-DD  HH:mm:ss')}</Item>
                         <Item>申请人员：{value.applyUserName}</Item>
                         <Item>所属部门：{value.department}</Item>
-                        <Item>开始时间：{moment.unix(parseInt(value.startTime)).format('YYYY-MM-DD')}</Item>
-                        <Item>结束时间：{moment.unix(parseInt(value.endTime)).format('YYYY-MM-DD')}</Item>
-                        <Item>请假类型：{info.type[value.type].name}</Item>
+                        <Item>加班时间：{moment.unix(parseInt(value.startTime)).format('YYYY-MM-DD')}</Item>
                         <Item>当前状态：{info.status[value.status]}</Item>
-                        <Item>请假原因：{value.reason}</Item>
+                        <Item>加班原因：{value.reason}</Item>
                         <Item>审核人员：{value.reviewer}</Item>
                         <Item>审核原因：{value.reviewReason}</Item>
                         <Item>审核时间：{moment.unix(parseInt(value.reviewTime)).format('YYYY-MM-DD HH:mm:ss')}</Item>
@@ -131,25 +114,33 @@ export default class ReviewList extends Component{
             nextText: (<Icon type="right" />),
             onChange: (e) => this.handlePageChange(e)
         };
+        const tabs = (
+            <Tabs defaultActiveKey="Draft" onChange={key => this.handleTabChange(key)}>
+                <Tabs.TabPane tab="草稿箱" key="Draft">
+                    <Accordion>
+                        {draftList}
+                    </Accordion>
+                    <WhiteSpace/>
+                    <Pagination {...pageProps}/>
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="已提交" key="Publish">
+                    <Accordion>
+                        {publishList}
+                    </Accordion>
+                    <WhiteSpace/>
+                    <Pagination {...pageProps}/>
+                </Tabs.TabPane>
+            </Tabs>
+        );
         return (
             <div className="leave-apply">
-                <Tabs defaultActiveKey="todo" onChange={key => this.handleTabChange(key)}>
-                    <Tabs.TabPane tab="待审核" key="todo">
-                        <Accordion>
-                            {accordList}
-                        </Accordion>
-                        <WhiteSpace/>
-                        <Pagination {...pageProps}/>
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="已审核" key="done">
-                        <Accordion>
-                            {publishList}
-                        </Accordion>
-                        <WhiteSpace/>
-                        <Pagination {...pageProps}/>
-                    </Tabs.TabPane>
-                </Tabs>
-
+                {(children && React.cloneElement(children, {
+                    edit: {
+                        list: this.state.list,
+                        type: 'modify',
+                        info
+                    }
+                })) || tabs}
             </div>
         );
     }

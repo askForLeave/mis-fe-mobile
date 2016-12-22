@@ -12,3 +12,9 @@ html, body, #root{
 #root .leave-drawer .am-drawer-sidebar{
     background-color: #ffffff;
 }
+#root .leave-drawer .am-menu{
+    height: auto !important;
+}
+#root .leave-drawer .am-menu .am-flexbox-item{
+    height: auto !important;
+}

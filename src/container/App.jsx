@@ -49,6 +49,10 @@ export default class App extends Component {
                     '7': {
                         name: '事假',
                         description: '事假无薪'
+                    },
+                    '10': {
+                        name: '加班',
+                        description: '加班申请'
                     }
                 },
                 status: {
@@ -104,6 +108,10 @@ export default class App extends Component {
             {
                 label: '请假审核列表',
                 value: 'review'
+            },
+            {
+                label: '加班申请列表',
+                value: 'add'
             },
             {
                 label: '帮助',

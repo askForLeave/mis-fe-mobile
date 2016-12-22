@@ -1,5 +1,5 @@
 import { param } from '../util';
-
+import {Toast} from 'antd-mobile';
 /**
  * fetch封装请求函数
  * @param  {function} dispatch redux的store的dispatch函数
@@ -52,6 +52,14 @@ export default (url = '', options) => {
                     }
                     else {
                         // 返回错误处理
+                        if (json.errno == 4) {
+                            Toast.warning("当前状态未登录，正在带您去登录");
+                            setTimeout(() => {
+                                location.href = "/log/log.html"
+                            }, 2000);
+                        } else {
+                            reject(json.errmsg);
+                        }
                     }
                 });
             })
@@ -59,10 +67,7 @@ export default (url = '', options) => {
                 outResolve(data);
             })
             .catch((error) => {
-                // notification.error({
-                //     message: '请求错误',
-                //     description: error
-                // });
+                Toast.fail(error);
             });
     });
 };
