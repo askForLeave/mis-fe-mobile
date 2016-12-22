@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import {NavBar, Toast, Icon, Drawer, Menu, WhiteSpace, WingBlank} from 'antd-mobile';
+import {NavBar, Toast, Icon, Drawer, Button, Menu, WhiteSpace, WingBlank} from 'antd-mobile';
 
 import fetch from '../common/fetch';
+
+
 export default class App extends Component {
     constructor(props) {
         super(props);
@@ -11,7 +13,8 @@ export default class App extends Component {
                 'index': '首页',
                 'apply': '申请列表',
                 'review': '审核列表',
-                'help': '帮助文档'
+                'help': '帮助文档',
+                'add': '加班列表'
             },
             info: {
                 annualTotal: 0,
@@ -102,12 +105,17 @@ export default class App extends Component {
             });
         });
     }
+    handleAdd() {
+        let path = location.pathname.substring(1);
+    }
+
     render() {
         const {children, router, location} = this.props;
         const navProps = {
             iconName: 'bars',
             onLeftClick: () => this.handleOpen(),
-            mode: 'light'
+            mode: 'light',
+            rightContent: <Button inline size="small" onClick={() => this.handleAdd()} >+</Button>
         };
         const menuData = [
             {

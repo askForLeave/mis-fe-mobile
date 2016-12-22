@@ -9,7 +9,6 @@ export default class Index extends Component {
     }
     render() {
         const {info} = this.props;
-        console.log(this.props);
         return (
             <div className="leave-index">
                 <WhiteSpace size="lg" />

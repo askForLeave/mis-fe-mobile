@@ -133,7 +133,7 @@ export default class ReviewList extends Component{
         };
         return (
             <div className="leave-apply">
-                <Tabs defaultActiveKey="todo" onChange={key => this.handleTabChange(key)}>
+                <Tabs defaultActiveKey="todo" onChange={key => this.handleTabChange(key)} animated={false}>
                     <Tabs.TabPane tab="待审核" key="todo">
                         <Accordion>
                             {accordList}

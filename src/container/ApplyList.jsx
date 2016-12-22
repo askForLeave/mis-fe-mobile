@@ -119,7 +119,7 @@ export default class ApplyList extends Component{
             onChange: (e) => this.handlePageChange(e)
         };
         const tabs = (
-            <Tabs defaultActiveKey="draft" onChange={key => this.handleTabChange(key)}>
+            <Tabs defaultActiveKey="draft" onChange={key => this.handleTabChange(key)} animated={false}>
                 <Tabs.TabPane tab="草稿箱" key="draft">
                     <Accordion>
                         {draftList}

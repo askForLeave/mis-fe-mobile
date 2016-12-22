@@ -115,7 +115,7 @@ export default class AddList extends Component{
             onChange: (e) => this.handlePageChange(e)
         };
         const tabs = (
-            <Tabs defaultActiveKey="Draft" onChange={key => this.handleTabChange(key)}>
+            <Tabs defaultActiveKey="Draft" onChange={key => this.handleTabChange(key)} animated={false}>
                 <Tabs.TabPane tab="草稿箱" key="Draft">
                     <Accordion>
                         {draftList}
