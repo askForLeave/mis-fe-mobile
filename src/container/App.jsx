@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router';
-import {NavBar, Icon, Drawer, Menu, WhiteSpace, WingBlank} from 'antd-mobile';
+import {NavBar, Toast, Icon, Drawer, Menu, WhiteSpace, WingBlank} from 'antd-mobile';
 
 import fetch from '../common/fetch';
 export default class App extends Component {
@@ -75,6 +74,20 @@ export default class App extends Component {
         this.setState({
             isOpen: !this.state.isOpen
         });
+        if (value[0] && value[0] === 'logout') {
+            fetch('/leave/auth/logout', {
+                data: {
+                    username: this.state.info.username
+                }
+            }).then(res => {
+                if (!res) {
+                    Toast.success("注销成功");
+                    location.href = '/log/log.html';
+                } else {
+                    Toast.fail('注销失败');
+                }
+            })
+        }
         router.push(value[0] || 'index');
     }
     componentWillMount() {
