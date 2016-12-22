@@ -22,7 +22,7 @@ class AddEdit extends Component {
     }
 
     handleSubmit(submitStatus) {
-        const {form, edit} = this.props;
+        const {form, edit, router} = this.props;
         form.validateFields((err, values) => {
             if (!err) {
                 const data = {
@@ -39,6 +39,7 @@ class AddEdit extends Component {
                 }).then((res) => {
                     if (!res) {
                         this.showSuccess('更新成功');
+                        router.push('/add');
                     }
                 })
             } else {
